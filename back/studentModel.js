@@ -20,4 +20,3 @@ const studentModel = mongoose.model("Studentmodel",
 studentSchema);
 export default studentModel;
     
-    

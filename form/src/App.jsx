@@ -1,63 +1,94 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-// import "bootstrap/dist/css/bootstrap.css"
-import { useNavigate } from 'react-router-dom'
-
-const App = () => {
-  const navigate = useNavigate()
-  const [name, setName] = useState("")
-  const [phone, setphone] = useState("")
-  const [age, setAge] = useState("")
 
 
-  const sendData = (e) => {
-    // e.preventDefault()
-    axios.post("http://localhost:4000/student/new", {
-      name: name,
-      phone: phone,
-      age: age
-    })
+import { useState } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+function App() {
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
+  const [phone, setPhone] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("age", age);
+    formData.append("phone", phone);
+    formData.append("profilePicture", profilePicture);
+    axios
+      .post("http://localhost:4000/student/new", 
+        formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      })
       .then((result) => {
-        console.log(typeof result.statusText)
-        if (result.statusText == "Created") {
-          navigate("/")
-        }
+       
+        if (result.status === 201 && result.statusText === "Created")
+          navigate("/");
       });
   };
   return (
-    <form id='Container' onSubmit={(e) => {
-      e.preventDefault()
-      sendData()
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="htmlForm-group">
+          <label htmlFor="exampleInputEmail1">Email address</label>
 
-    }
-    }>
-      <div className='input-box'>
-        <label htmlFor="name">Name</label>
-        <input id='Name' type="text" value={name}
-          placeholder='Enter Your Name'
-          onChange={(e) => setName(e.target.value)} />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            type="text"
+            className="htmlForm-control"
+            id="exampleInputName"
+            aria-describedby="NameHelp"
+            placeholder="Enter name"
+          />
+        </div>
+        <div className="htmlForm-group">
+          <label htmlFor="exampleInputAge">Age</label>
+          <input
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            type="text"
+            className="htmlForm-control"
+            id="exampleInputAge"
+            placeholder="Age"
+          />
+        </div>
+        <div className="htmlForm-group">
+          <label htmlFor="exampleInputPhone">Phone</label>
+          <input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            type="text"
+            className="htmlForm-control"
+            id="exampleInputPhone"
+            placeholder="Phone"
+          />
+        </div>
+        <div className="htmlForm-group">
+          <label htmlFor="exampleInputProfilePicture">Profile Picture</label>
+          <input
+            onChange={(e) => setProfilePicture(e.target.files[0])}
+            type="file"
+            className="htmlForm-control-file"
+            id="exampleInputProfilePicture"
+          />
+        </div>
 
-      </div>
-
-
-      <div className='input-box'>
-        <label htmlFor="phone.no">Phone.no</label>
-        <input id='phone.no' type="number" value={phone}
-          placeholder='Enter Your Phone.no'
-          onChange={(e) => setphone(e.target.value)} />
-      </div>
-
-      <div className='input-box'>
-        <label htmlFor="age">Age</label>
-        <input id='age' type="number" value={age}
-          placeholder='Enter Your Age'
-          onChange={(e) => setAge(e.target.value)} />
-      </div>
-      <div id='button' className='input-box'>
-        <input type="Submit" />
-      </div>
-    </form>
-  )
+        <button type="submit" className="btn btn-primary">
+          Submit
+        </button>
+      </form>
+    </>
+  );
 }
 
-export default App
+export default App;
